@@ -21,29 +21,32 @@
 
 ## 📦 Instalação
 
+
+
 ```bash
 pip install light-health
+```
 
+---
 
-🧠 Conceito
+## 🧠 Conceito
 
 Inspirado no Spring Actuator, a lib separa claramente:
 
-🔹 Runtime (execução)
+🔹 **Runtime (execução)**
+  - ASGI puro
+  - Sem dependência de framework
+  - Ideal para produção
 
-ASGI puro
+🔹 **Contrato (documentação)**
+  - Pode ser exposto via FastAPI
+  - Usado apenas para Swagger / OpenAPI
 
-Sem dependência de framework
+---
 
-Ideal para produção
+## 📁 Estrutura da lib
 
-🔹 Contrato (documentação)
-
-Pode ser exposto via FastAPI
-
-Usado apenas para Swagger / OpenAPI
-
-📁 Estrutura da lib
+```
 light_health/
 ├── asgi/
 │   ├── health.py        # Health / readiness / liveness
@@ -57,6 +60,7 @@ light_health/
 ├── status.py           # Status + agregação
 ├── management_models.py
 └── __init__.py
+```
 
 🩺 Health Checks
 Tipos suportados
