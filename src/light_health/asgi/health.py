@@ -34,6 +34,12 @@ class HealthASGIApp:
             status = 200 if payload.status == HealthState.UP else 503
             await self._send(send, status, payload)
             return
+        
+        if path == f"{root_path}/up":
+            payload = await self.registry.readiness()
+            status = 200 if payload.status == HealthState.UP else 503
+            await self._send(send, status, payload)
+            return        
 
         await self._send(send, 404, {"error": "Not Found"})
 
