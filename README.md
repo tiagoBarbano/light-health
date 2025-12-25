@@ -64,6 +64,7 @@ import uvicorn
 from pymongo import AsyncMongoClient
 import redis.asyncio as redis
 
+from light_health.asgi.base import HealthStatus,HealthCheck
 from light_health.asgi.management import ManagementASGIApp
 from light_health.asgi.health import HealthASGIApp
 from light_health.registry import AsyncHealthRegistry
@@ -88,12 +89,21 @@ registry.register_readiness(
     http_health_check("https://httpbin.org/status/200"),
 )
 
+class MyCheck(HealthCheck):
+    async def check(self) -> HealthStatus:
+        return HealthStatus.up(details={"test_custom": "ok"})
+    
+registry_test = AsyncHealthRegistry()
+registry_test.register_readiness("custom", MyCheck().check)
+
 app = FastAPI()
 app.mount("/actuator", HealthASGIApp(registry))
+app.mount("/test", HealthASGIApp(registry_test))
 app.mount("/management", ManagementASGIApp())
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
+
 ```
 
 **Endpoints disponíveis:**

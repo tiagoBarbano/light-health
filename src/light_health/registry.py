@@ -26,27 +26,23 @@ class AsyncHealthRegistry:
         return await self._run(self._readiness)
 
     async def _run(self, checks) -> HealthResponse:
-        tasks = {
-            name: asyncio.create_task(self._safe(check))
-            for name, check in checks.items()
-        }
+        names = list(checks.keys())
+        coros = [self._safe(check) for check in checks.values()]
 
-        results: Dict[str, HealthCheckResult] = {}
-        overall = HealthState.UP
+        results_list = await asyncio.gather(*coros)
 
-        for name, task in tasks.items():
-            result = await task
-            results[name] = result
-            if result.status is HealthState.DOWN:
-                overall = HealthState.DOWN
+        results = dict(zip(names, results_list))
+
+        overall = (
+            HealthState.UP
+            if all(r.status is HealthState.UP for r in results.values())
+            else HealthState.DOWN
+        )
 
         return HealthResponse(status=overall, checks=results)
 
-    async def _safe(self, check) -> HealthCheckResult:
+    async def _safe(self, check):
         try:
-            return await check()
-        except Exception as e:
-            return HealthCheckResult(
-                status=HealthState.DOWN,
-                details={"error": str(e)},
-            )
+            return await asyncio.wait_for(check(), timeout=2.0)
+        except Exception as exc:
+            return HealthCheckResult.down(details={"error": str(exc)})
