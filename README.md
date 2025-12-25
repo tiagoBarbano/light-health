@@ -96,85 +96,26 @@ if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
 ```
 
----
+**Endpoints disponíveis:**
 
 ## 🩺 Health Checks
 
-| Tipo      | Endpoint           |
-|-----------|--------------------|
-| Liveness  | /health/liveness   |
-| Readiness | /health/readiness  |
-| Full      | /health            |
+| Tipo      | Endpoint               |
+|-----------|------------------------|
+| Liveness  | /{root_path}/liveness  |
+| Readiness | /{root_path}/readiness |
+| Health    | /{root_path}/health    |
+| UP        | /{root_path}/up        |
 
-### 🧱 Criando Checks
+## 🩺 Management
 
-**MongoDB:**
-```python
-from light_health.checks.mongo import MongoHealthCheck
+| Tipo           | Endpoint                    |
+|----------------|-----------------------------|
+| loggers        | /{root_path}/loggers        |
+| loggers update | /{root_path}/loggers/update |
+| env            | /{root_path}/env            |
+| env update     | /{root_path}/env/update     |
 
-mongo_check = MongoHealthCheck(
-    name="mongo",
-    uri="mongodb://localhost:27017",
-)
-```
-
-**Redis:**
-```python
-from light_health.checks.redis import RedisHealthCheck
-
-redis_check = RedisHealthCheck(
-    name="redis",
-    url="redis://localhost:6379",
-)
-```
-
-**Serviço HTTP:**
-```python
-from light_health.checks.http import HttpHealthCheck
-
-http_check = HttpHealthCheck(
-    name="billing-api",
-    url="https://billing/health",
-)
-```
-
-### 🗂️ Registry de Checks
-```python
-from light_health.registry import AsyncHealthRegistry
-
-registry = AsyncHealthRegistry()
-registry.register(mongo_check)
-registry.register(redis_check)
-registry.register(http_check)
-```
-
-O registry executa checks em paralelo, agrega status e controla timeout/falhas.
-
----
-
-## 🚀 Usando com FastAPI
-
-```python
-from fastapi import FastAPI
-from light_health.asgi.health import HealthASGIApp
-from light_health.asgi.management import ManagementASGIApp
-
-app = FastAPI()
-app.mount("/health", HealthASGIApp(registry))
-app.mount("/management", ManagementASGIApp())
-```
-
-**Endpoints disponíveis:**
-
-- `GET /health`
-- `GET /health/liveness`
-- `GET /health/readiness`
-- `GET /management/loggers`
-- `POST /management/loggers/update`
-- `GET /management/env`
-- `POST /management/env/update`
-
----
 
 ## 📘 Swagger / OpenAPI
 
