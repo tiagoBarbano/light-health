@@ -1,44 +1,29 @@
+[build-system]
+requires = ["setuptools>=68", "wheel", "build"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "light-health"
 version = "0.1.0"
-description = "Lightweight async ASGI health checks"
+description = "Lightweight ASGI health checks inspired by Spring Actuator"
 readme = "README.md"
-license = { text = "MIT" }
+license = "MIT"
+requires-python = ">=3.13"
+
 authors = [
     { name = "Tiago Ventura", email = "tiago.barbano@gmail.com" }
 ]
-requires-python = ">=3.13"
+
 dependencies = [
-    "httpx>=0.28.1",
     "msgspec>=0.18",
-    "pytest>=9.0.2",
-    "pytest-asyncio>=1.3.0",
 ]
-
-[project.optional-dependencies]
-mongo = ["pymongo>=4.15.5"]
-redis = ["redis>=5.0"]
-http = ["aiohttp>=3.9"]
-fastapi = ["fastapi>=0.110", "uvicorn>=0.29"]
-
-dev = [
-    "build",
-    "twine",
-]
-
-[project.scripts]
-light-health = "light_health:main"
-
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
 
 classifiers = [
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
+    "Framework :: FastAPI",
     "Framework :: AsyncIO",
 ]
 
 [project.urls]
-Homepage = "https://github.com/tiagoventura/light-health"
-Repository = "https://github.com/tiagoventura/light-health"
+Homepage = "https://github.com/tiagoBarbano/light-health"
+Repository = "https://github.com/tiagoBarbano/light-health"
